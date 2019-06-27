@@ -8,18 +8,21 @@ mov sp, 0x7c00
 mov ds, ax
 mov es, ax
 
-lea si, [msg]
-
-puts:	// si: addr of string to put
+lea si, [hello_msg]
+hello_loop:	// si: addr of string to put
 	mov al, [si]
 	inc si
 	cmp al, 0
-	je end_puts
+	je hello_end
+	mov bx, 15	// black bg, white fg
 	mov ah, 0x0e
-	mov bx, 15
-	int 0x10
-	jmp puts
-end_puts:
+	int 0x10 // INT 0x10, AH=0x0E: Teletype output
+	jmp hello_loop
+hello_end:
+	jmp die
+
+hello_msg:
+	.asciz "\nHello, world!\n"
 
 die:
 	cli
@@ -27,5 +30,3 @@ die:
 	jmp die
 	
 
-msg:
-	.asciz "\nHello, world!\n"
